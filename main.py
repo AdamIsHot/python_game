@@ -23,7 +23,6 @@ class Geek:
       
     # setter method
     def set_age(self, X, Y):
-        #sem napsat neco, aby program postupne pouzival vsechny hodnoty
         self._x = X
         self._y = Y
     
@@ -37,9 +36,12 @@ direction = 0
 t = 0
 s = 0
 running = True
-screen.fill((255, 255, 255))
+positions_x = [400, 450, 500, 550]
+positions_y = [400, 400, 400, 400]
+number_of_points = 4
+
 while running:
-    screen.blit(snake, (x, y))
+    screen.fill((255, 255, 255))
 
 
 
@@ -60,41 +62,29 @@ while running:
   
                 if event.key == pygame.K_s:
                     direction = 4
-    
-    raj.set_age(x, y)
-    erase_x, erase_y = raj.get_age()
 
     if direction == 1:
         x -= velocity
-        if t == 5:
-            screen.fill((255, 255, 255), (erase_x, erase_y, 50, 50))
-
-        else:
-            t += 1
-        
-        
+        horizontal_movement = True
     if direction == 2:
         x += velocity
-        if t == 5:
-            screen.fill((255, 255, 255), (erase_x, erase_y, 50, 50))
-        else:
-            t += 1       
+        horizontal_movement = True
     if direction == 3:
         y -= velocity
-        if t == 5:
-            screen.fill((255, 255, 255), (erase_x, erase_y, 50, 50))
-        else:
-            t += 1
+        horizontal_movement = False
     if direction == 4:
         y += velocity
-        if t == 5:
-            screen.fill((255, 255, 255), (erase_x, erase_y, 50, 50))
-        else:
-            t += 1
+        horizontal_movement = False
     
+    positions_x.append(x) # zapise do listu aktualni pozici
+    positions_y.append(y)
     
+    for i in range (number_of_points):
+        screen.blit(snake, (positions_x[i], positions_y[i]))
 
-    
+    positions_x.pop(0) # smaze z listu posledni pozici
+    positions_y.pop(0)
+
     pygame.display.update()
     pygame.time.wait(150)
         
