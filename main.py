@@ -67,8 +67,15 @@ while running:
         screen.blit(snake, (positions_x[i], positions_y[i]))
 
     if x == apple_x and y == apple_y:
-        apple_x = random.choice(apple_positons)
-        apple_y = random.choice(apple_positons)
+        apple_on_snake = True
+        while apple_on_snake:
+            apple_x = random.choice(apple_positons)
+            apple_y = random.choice(apple_positons)
+            apple_on_snake = False
+            for n in range(number_of_points):
+                if apple_x == positions_x[n] and apple_y == positions_y[n]:
+                    apple_on_snake = True
+
         number_of_points += 1
     else:
         positions_x.pop(0) # smaze z listu posledni pozici
@@ -83,4 +90,4 @@ while running:
     pygame.display.update()
     pygame.time.wait(150)
         
-    
+    #ps: opravit to ze kdyz rychle zmenim smer had muze jit dozadu a kdyz rychle zmenim smer u jablka jablko se nevezme a preformatovat kod, protoze tohle je bordel
