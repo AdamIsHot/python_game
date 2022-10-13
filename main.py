@@ -31,23 +31,24 @@ x = 400
 y = 400
 
 while running:
+    ended_move = False
     screen.fill((255, 255, 255))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
         if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a and not horizontal_movement:
-                    direction = 1; horizontal_movement = True
-                if event.key == pygame.K_d and not horizontal_movement:
-                    direction = 2; horizontal_movement = True
-                if event.key == pygame.K_w and horizontal_movement:
-                    direction = 3; horizontal_movement = False
-                if event.key == pygame.K_s and horizontal_movement:
-                    direction = 4; horizontal_movement = False
+                
+                if event.key == pygame.K_a and not horizontal_movement and not ended_move:
+                    direction = 1; horizontal_movement = True; ended_move = True
+                if event.key == pygame.K_d and not horizontal_movement and not ended_move:
+                    direction = 2; horizontal_movement = True; ended_move = True
+                if event.key == pygame.K_w and horizontal_movement and not ended_move:
+                    direction = 3; horizontal_movement = False; ended_move = True
+                if event.key == pygame.K_s and horizontal_movement and not ended_move:
+                    direction = 4; horizontal_movement = False; ended_move = True
 
     x, y = m.next_direction(x, y, direction, velocity)
-
     positions_x.append(x) # zapise do listu aktualni pozici
     positions_y.append(y)
     
@@ -67,5 +68,3 @@ while running:
 
     pygame.display.update()
     pygame.time.wait(150)
-
-#ps: opravit to ze kdyz rychle zmenim smer had muze jit dozadu a kdyz rychle zmenim smer u jablka jablko se nevezme
