@@ -22,8 +22,8 @@ def next_apple(apple_positons, number_of_points, positions_x, positions_y):
 
     return apple_x, apple_y
 
-def lose(number_of_points, x, y, positions_x, positions_y):
+def lose(number_of_points, x, y, positions_x, positions_y, game_started):
     for p in range (number_of_points - 1): # zde poznava zda nenarazil sam na sebe
-        if x == positions_x[p] and y == positions_y[p]:
-            return 'lost'
-    return 'lol'
+        if game_started and x == positions_x[p] and y == positions_y[p] or x < 0 or x > 800 or y < 0 or y > 800:
+            return True
+    return False
