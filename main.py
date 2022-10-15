@@ -15,10 +15,10 @@ snake = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
 apple = pygame.transform.scale(image2, DEFAULT_IMAGE_SIZE)
 
 red = (255, 0, 0)
-font = pygame.font.Font('freesansbold.ttf', 32)
-text = font.render('Lose', True, red)
+font = pygame.font.Font('freesansbold.ttf', 64)
+text = font.render('Lost', True, red)
 textRect = text.get_rect()
-textRect.center = (400 // 2, 400 // 2)
+textRect.center = (400, 400)
 
 velocity = 50
 direction = 0
@@ -31,11 +31,11 @@ positions_y = [400, 400, 400, 400]
 number_of_points = 4
 horizontal_movement = False
 apple_positons = [0,50,100,150,200,250,300,350,400,450,500,550,600,650,700,750]
-apple_x = random.choice(apple_positons)
-apple_y = random.choice(apple_positons)
+apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
 x = 400
 y = 400
 game_started = False
+lost = False
 
 while running:
     screen.fill((255, 255, 255))
@@ -61,29 +61,34 @@ while running:
                     
                 
     if game_started:
-        x, y = m.next_direction(x, y, direction, velocity)
-        positions_x.append(x) # zapise do listu aktualni pozici
-        positions_y.append(y)
-
-        if x == apple_x and y == apple_y:
-            apple_x, apple_y = m.next_apple(apple_positons, number_of_points, positions_x, positions_y)
-            number_of_points += 1
+        
+        if not lost:
+            x, y = m.next_direction(x, y, direction, velocity)
+            positions_x.append(x) # zapise do listu aktualni pozici
+            positions_y.append(y)
+        
+        if m.lose(len(positions_x), x, y, positions_x, positions_y, game_started):
+            lost = True
+            screen.blit(text, textRect)
+            positions_x.pop(len(positions_x) - 1)
+            positions_y.pop(len(positions_y) - 1)
         else:
-            positions_x.pop(0) # smaze z listu posledni pozici
-            positions_y.pop(0)
+            if x == apple_x and y == apple_y:
+                apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
+            else:
+                positions_x.pop(0) # smaze z listu posledni pozici
+                positions_y.pop(0)
 
-        if m.lose(number_of_points, x, y, positions_x, positions_y, game_started):
-            screen.blit(text, textRect)   
 
 
-    for i in range (number_of_points):
+    for i in range (len(positions_x)):
         screen.blit(snake, (positions_x[i], positions_y[i]))
         
-    
-
-    
-
     screen.blit(apple, (apple_x, apple_y))
     
     pygame.display.update()
-    pygame.time.wait(130)
+    if lost:
+        pygame.time.wait(1500)
+        running = False
+    else:
+        pygame.time.wait(130)
