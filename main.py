@@ -3,30 +3,30 @@ import movement as m
 
 pygame.init()
 
-# screen essentials
+# screen variables
 screen = pygame.display.set_mode((800, 800))
 pygame.display.set_caption('PySnake')
 
-# images essentials
+# images variables
 image = pygame.image.load(r'snake_image.png')
 image2 = pygame.image.load(r'jablko.png')
 DEFAULT_IMAGE_SIZE = (50, 50)
 snake = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
 apple = pygame.transform.scale(image2, DEFAULT_IMAGE_SIZE)
 
-# text essetials
+# text variables
 red = (255, 0, 0)
 font = pygame.font.Font('freesansbold.ttf', 64)
 text = font.render('Lost', True, red)
 textRect = text.get_rect()
 textRect.center = (400, 400)
 
-# movement essentials
+# movement variables
 velocity = 50
-direction = 0
-horizontal_movement = False
+direction = 1
+horizontal_movement = 2
 
-# positions essentials
+# positions variables
 x = 400
 y = 400
 positions_x = [550, 500, 450, 400]
@@ -34,7 +34,7 @@ positions_y = [400, 400, 400, 400]
 apple_positons = [0,50,100,150,200,250,300,350,400,450,500,550,600,650,700,750]
 apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
 
-# game running essentials
+# game running variables
 game_started = False
 ended_move = False
 lost = False
@@ -45,24 +45,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a and not horizontal_movement and not ended_move:
-                direction = 1; horizontal_movement = True; game_started = True; ended_move = True
-            if event.key == pygame.K_d and not horizontal_movement and game_started and not ended_move:
-                direction = 2; horizontal_movement = True; ended_move = True
-            if event.key == pygame.K_w and not ended_move:
-                if not game_started:
-                    direction = 3; horizontal_movement = False; game_started = True; ended_move = True
-                elif horizontal_movement:
-                    direction = 3; horizontal_movement = False; game_started = True; ended_move = True
-                    
-            if event.key == pygame.K_s and not ended_move:
-                if not game_started:
-                    direction = 4; horizontal_movement = False; game_started = True; ended_move = True
-                elif horizontal_movement:
-                    direction = 4; horizontal_movement = False; game_started = True; ended_move = True
-                    
-                
+
+
+        if event.type == pygame.KEYDOWN and not ended_move:
+            direction, ended_move = m.control(direction, event)
+            game_started = True
+            
     if game_started:
         
         if not lost:
@@ -70,7 +58,7 @@ while running:
             positions_x.append(x) # zapise do listu aktualni pozici
             positions_y.append(y)
         
-        if m.lose(len(positions_x), x, y, positions_x, positions_y, game_started):
+        if m.lose(len(positions_x), x, y, positions_x, positions_y):
             lost = True
             screen.blit(text, textRect)
             positions_x.pop(len(positions_x) - 1)
