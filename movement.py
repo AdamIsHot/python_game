@@ -39,5 +39,6 @@ def control(direction, event):
         return 3, True
     if event.key == pygame.K_s and direction != 3:
         return 4, True
+    return direction, True
 
     
