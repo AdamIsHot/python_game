@@ -52,18 +52,14 @@ while running:
             game_started = True
             
     if game_started:
-        
-        if not lost:
-            x, y = m.next_direction(x, y, direction, velocity)
-            positions_x.append(x) # zapise do listu aktualni pozici
-            positions_y.append(y)
-        
         if m.lose(len(positions_x), x, y, positions_x, positions_y):
-            lost = True
             screen.blit(text, textRect)
             positions_x.pop(len(positions_x) - 1)
             positions_y.pop(len(positions_y) - 1)
         else:
+            x, y = m.next_direction(x, y, direction, velocity)
+            positions_x.append(x) # zapise do listu aktualni pozici
+            positions_y.append(y)
             if x == apple_x and y == apple_y:
                 apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
             else:
