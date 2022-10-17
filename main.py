@@ -10,9 +10,11 @@ pygame.display.set_caption('PySnake')
 # images variables
 image = pygame.image.load(r'snake_image.png')
 image2 = pygame.image.load(r'jablko.png')
+image3 = pygame.image.load(r'ecstasy.png')
 DEFAULT_IMAGE_SIZE = (50, 50)
 snake = pygame.transform.scale(image, DEFAULT_IMAGE_SIZE)
 apple = pygame.transform.scale(image2, DEFAULT_IMAGE_SIZE)
+emko = pygame.transform.scale(image3, DEFAULT_IMAGE_SIZE)
 
 # text variables
 red = (255, 0, 0)
@@ -33,11 +35,13 @@ positions_x = [550, 500, 450, 400]
 positions_y = [400, 400, 400, 400]
 apple_positons = [0,50,100,150,200,250,300,350,400,450,500,550,600,650,700,750]
 apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
+emo_x, emo_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
 
 # game running variables
 game_started = False
 ended_move = False
 lost = False
+wait_time = 135
 
 running = True
 while running:
@@ -46,36 +50,44 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-
         if event.type == pygame.KEYDOWN and not ended_move:
             direction, ended_move = m.control(direction, event)
             game_started = True
-            
+    
     if game_started:
-        if m.lose(len(positions_x), x, y, positions_x, positions_y):
-            screen.blit(text, textRect)
-            positions_x.pop(len(positions_x) - 1)
-            positions_y.pop(len(positions_y) - 1)
-        else:
+        if not lost:
             x, y = m.next_direction(x, y, direction, velocity)
             positions_x.append(x) # zapise do listu aktualni pozici
             positions_y.append(y)
+        if m.lose(len(positions_x), x, y, positions_x, positions_y):
+            lost = True
+            positions_x.pop(len(positions_x) - 1)
+            positions_y.pop(len(positions_y) - 1)
+        else:
             if x == apple_x and y == apple_y:
                 apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
             else:
                 positions_x.pop(0) # smaze z listu posledni pozici
                 positions_y.pop(0)
 
+            if x == emo_x and y == emo_y:
+                emo_x, emo_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
+                wait_time -= 10
 
 
     for i in range (len(positions_x)):
         screen.blit(snake, (positions_x[i], positions_y[i]))
         
     screen.blit(apple, (apple_x, apple_y))
+    screen.blit(emko, (emo_x, emo_y))
+
+    if lost:
+        screen.blit(text, textRect)
+
     pygame.display.update()
     ended_move = False
     if lost:
         pygame.time.wait(1500)
         running = False
     else:
-        pygame.time.wait(130)
+        pygame.time.wait(wait_time)
