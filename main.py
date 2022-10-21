@@ -18,10 +18,17 @@ emko = pygame.transform.scale(image3, DEFAULT_IMAGE_SIZE)
 
 # text variables
 red = (255, 0, 0)
+blue = (51, 102, 153)
+yellow = (0, 255, 255)
 font = pygame.font.Font('freesansbold.ttf', 64)
+font2 = pygame.font.Font('freesansbold.ttf', 20)
 text = font.render('Lost', True, red)
 textRect = text.get_rect()
 textRect.center = (400, 400)
+textRect2 = text.get_rect()
+textRect2.center = (70, 40)
+textRect3 = text.get_rect()
+textRect3.center = (150, 40)
 
 # movement variables
 velocity = 50
@@ -42,6 +49,8 @@ game_started = False
 ended_move = False
 lost = False
 wait_time = 135
+highest_score = m.HighestScore()
+score = 0
 
 running = True
 while running:
@@ -65,6 +74,7 @@ while running:
             positions_y.pop(len(positions_y) - 1)
         else:
             if x == apple_x and y == apple_y:
+                score += 1
                 apple_x, apple_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
             else:
                 positions_x.pop(0) # smaze z listu posledni pozici
@@ -74,12 +84,27 @@ while running:
                 emo_x, emo_y = m.next_apple(apple_positons, len(positions_x), positions_x, positions_y)
                 wait_time -= 10
 
-
     for i in range (len(positions_x)):
         screen.blit(snake, (positions_x[i], positions_y[i]))
-        
     screen.blit(apple, (apple_x, apple_y))
     screen.blit(emko, (emo_x, emo_y))
+
+
+    f = open("highest_score.txt", "r")
+    highest_score.set_highest_score(int(f.read(1)))
+    f.close()
+    
+    if highest_score.get_highest_score() < score:
+        f = open("highest_score.txt", "w")
+        f.write(str(score))
+        f.close()
+    
+
+    
+    text2 = font2.render('Score: ' + str(score), True, blue)
+    text3 = font2.render('Highest score: ' + str(highest_score.get_highest_score()), True, yellow)
+    screen.blit(text2, textRect2)
+    screen.blit(text3, textRect3)
 
     if lost:
         screen.blit(text, textRect)

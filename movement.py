@@ -41,4 +41,14 @@ def control(direction, event):
         return 4, True
     return direction, True
 
+class HighestScore:
+    def __init__(self, highest_score = 0):
+         self._highest_score = highest_score
+      
+    def get_highest_score(self):
+        return self._highest_score
+      
+    def set_highest_score(self, s):
+        self._highest_score = s
+
     
