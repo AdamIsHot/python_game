@@ -112,7 +112,6 @@ while running:
     # rendering body
     for i in range (1, len(positions_x)-1):
         
-        angle_body = pygame.transform.rotate()
         screen.blit(snake, (positions_x[i], positions_y[i]))
 
     screen.blit(apple, (apple_x, apple_y))
